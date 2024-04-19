@@ -167,9 +167,9 @@ contract TaskManagement {
         //Get amount of available tasks and create array
         /*
         Note:
-        Two for loops makes slightly more expensive in terms of gas, but unsure if that is preffered or 
-        if having an array with some empty elements is better due to less gas useage.
-        I decided to go for two for loops, since it gave a cleaner output for the user. 
+        Two for loops makes it slightly more expensive in terms of gas, but gives a cleaner output for the user,
+        as it does not include any empty elements
+
         The alternative is:
         Replace availableLength with taskKeys.length and remove the first for loop
         new Task[](availableLength); --> new Task[](taskKeys.length);
