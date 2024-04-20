@@ -8,7 +8,7 @@ contract LeToken {
 
     address public owner; 
     address payable public ownerPay;
-    uint256 totalCoins = 1000;
+    uint256 public totalCoins = 1000;
 
     event BuyLeCoin(
         address indexed _buyer,
@@ -35,7 +35,7 @@ contract LeToken {
     }
 
     //Owner function to transfer Le Coin
-    function transferCoins(address _from, address _to, uint256 _amount) public onlyOwner {
+    function transferCoin(address _from, address _to, uint256 _amount) public onlyOwner {
         require(balances[_from] >= _amount,"Insufficient coins in the from address");
         balances[_from] -= _amount;
         balances[_to] += _amount;
@@ -62,8 +62,8 @@ contract LeToken {
 
     //Just for fun, you can spend 1 Ether on 100 Le Coins (more to show something being payable)
     //In theory, a mean older sibling could buy more Le Coin with real money to give their younger siblings more tasks hehe >:)
-    function buyToken() public payable {
-        require(msg.value == 1 ether, "Need 1 ether to buy coin");
+    function buyCoin() public payable {
+        require(msg.value == 1 ether, "Need 1 ether to buy 100 Le Coin");
         balances[msg.sender] += 100;
         ownerPay.transfer(msg.value);
 
@@ -167,9 +167,9 @@ contract TaskManagement {
         //Get amount of available tasks and create array
         /*
         Note:
-        Two for loops makes it slightly more expensive in terms of gas, but gives a cleaner output for the user,
-        as it does not include any empty elements
-
+        Two for loops makes slightly more expensive in terms of gas, but unsure if that is preffered or 
+        if having an array with some empty elements is better due to less gas useage.
+        I decided to go for two for loops, since it gave a cleaner output for the user. 
         The alternative is:
         Replace availableLength with taskKeys.length and remove the first for loop
         new Task[](availableLength); --> new Task[](taskKeys.length);
