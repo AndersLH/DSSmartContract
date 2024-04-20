@@ -76,7 +76,7 @@ describe("TaskManagement", function () {
   it("Test creating a new task and checking if it is added to contract", async function () {
 
     //Create new task
-    await task.createTask("New task name","New task description",50);
+    await task.connect(deployer).createTask("New task name","New task description",50);
     
     const available = await task.showAllAvailableTasks();
     assert.equal(available.length, 1, "Should only be one task available")
@@ -105,10 +105,24 @@ describe("TaskManagement", function () {
   });
 
   it("Try finish a task", async function () {
+    //Finish task
+    await task.connect(account1).finishTask(1);
+  });
 
-    //
-    await task.connect(account2).finishTask(1);
+  it("Try verify your own finished task, should not be allowed", async function () {
+    //Finish task
+    await expect(task.connect(account1).verifyFinishTask(1)).to.be.reverted;
 
+  });
+
+  it("Try verify a finished task and check reward", async function () {
+    //Finish task
+    await task.connect(deployer).verifyFinishTask(1);
+
+
+    //Assigned should have 150 Le Coin after getting reward
+    const account1Balance = await leToken.balances(await account1.getAddress());
+    assert.equal(account1Balance, 150, "Should have 150 Le Coin")
 
 
   });
