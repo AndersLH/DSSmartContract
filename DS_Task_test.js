@@ -6,6 +6,9 @@ const { ethers } = require("hardhat");
 let LeToken;
 let leToken;
 
+let Task;
+let task;
+
 let accounts;
 let deployer;
 let account1;
@@ -15,12 +18,12 @@ before(async () => {
     //Deploy LeToken contract
     LeToken = await ethers.getContractFactory("LeToken");
     leToken = await LeToken.deploy();
-    leToken.deployed();
+    await leToken.deployed();
 
     //Deploy TaskManagement contract
-    // const Task = await ethers.getContractFactory("TaskManagement");
-    // const task = await Task.deploy();
-    // await task.deployed();
+    Task = await ethers.getContractFactory("TaskManagement");
+    task = await Task.deploy(leToken.address);
+    await task.deployed();
 
     // Get accounts
     accounts = await ethers.getSigners();
@@ -69,17 +72,44 @@ describe("LeToken", function () {
 });
 
 
-// describe("TaskManagement", function () {
-//   it("Test creating a new task", async function () {
+describe("TaskManagement", function () {
+  it("Test creating a new task and checking if it is added to contract", async function () {
 
-//     //Create new task
-//     await task.createTask("New task name","New task description",50);
+    //Create new task
+    await task.createTask("New task name","New task description",50);
     
-//     // function createTask(string memory _name, string memory _description, uint256 _reward) public {
+    const available = await task.showAllAvailableTasks();
+    assert.equal(available.length, 1, "Should only be one task available")
+
+  });
+
+  it("Assign a task to address2 and see if they can find it under myCurrentTasks()", async function () {
+
+    //Create new task
+    await task.connect(account1).claimTask(1);
+    //Claim task
+    const claimed = await task.connect(account1).myCurrentTasks();
+    assert.equal(claimed.length, 1, "Should be one claimed task")
+
+  });
+
+  it("Try cancel someone elses task, should not be allowed", async function () {
+
+    //Check if one task is claimed
+    let claimed = await task.connect(account1).myCurrentTasks();
+    assert.equal(claimed.length, 1, "Should be one claimed task to start")
+
+    //Cancel task
+    await expect(task.connect(account2).cancelTask(1)).to.be.reverted;
+
+  });
+
+  it("Try finish a task", async function () {
+
+    //
+    await task.connect(account2).finishTask(1);
 
 
-//     // assert.equal(await leToken.totalCoins(), 0, "totalCoins should be 0 as constructor transfer to deployer");
-//     // assert.equal(await leToken.balances(await deployer.getAddress()), 1000, "deployer should be 1000 as constructor transfer to deployer");
 
-//   });
-// });
+  });
+});
