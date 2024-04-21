@@ -288,7 +288,7 @@ contract TaskManagement {
     }
 
     //Reward 'assigned' after task is done
-    function distributeReward(address _assigned, uint256 _reward) public {
+    function distributeReward(address _assigned, uint256 _reward) internal {
         LeToken leToken = LeToken(leTokenAddress);
         leToken.transferRewardToAddress(_assigned, _reward);
     }
