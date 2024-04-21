@@ -1,4 +1,4 @@
-# DSSmartContract
+# Le Coin - IMT4306 project
 
 ## Description
 This is a project using smart contracts for a Decentralized Autonomous Organisation (DAO). 
