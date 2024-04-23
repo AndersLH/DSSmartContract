@@ -26,4 +26,5 @@ The 'TaskManagement' contract is where all the task logic is placed. Some of the
 2. Run the script
    - The script can be ran by pressing the green play button in the top left, or right clicking the file in the file explorer and pressing 'run'
 
+## How to use and interact the contracts
 
